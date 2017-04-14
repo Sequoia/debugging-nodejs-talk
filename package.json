@@ -1,0 +1,32 @@
+{
+  "name": "debugging-nodejs-talk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "buildHTML.js",
+  "dependencies": {
+    "debug": "^2.6.3",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.0",
+    "watch": "^1.0.2"
+  },
+  "scripts": {
+    "template": "node buildHTML.js",
+    "watch-template": "watch 'npm run template' content templates",
+    "watch": "npm run watch-template & npm run serve",
+    "serve": "live-server --port=8090 --watch=*.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sequoia/debugging-nodejs-talk.git"
+  },
+  "keywords": [],
+  "author": "Sequoia McDowell <sequoia.mcdowell@gmail.com> (http://sequoia.makes.software/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sequoia/debugging-nodejs-talk/issues"
+  },
+  "homepage": "https://github.com/Sequoia/debugging-nodejs-talk#readme"
+}
