@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Awesome Presentation</title>
+    <title>Debugging Node.js</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
-      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      /*@import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
-      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);*/
 /*
       body { font-family: 'Droid Serif'; }
       h1, h2, h3 {
@@ -14,20 +14,242 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }*/
+      @import url('https://fonts.googleapis.com/css?family=Open+Sans');
     </style>
+
+    <link type="text/css" rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
     <textarea id="source">
 
-fools!
+class: title
+# Debugging Node.js
+
+## Sequoia McDowell
+
+* 🌐  http://sequoia.makes.software
+* 🦆  @_sequoia
+* 📧  sequoia.mcdowell@gmail.com
+
+???
+
+## Welcoming to debugging Node.js!
+
+* I'm Sequoia, find me online at x, y, z
+* I've been writing Node.js since v0.3
+* Come a long way since then
+* Worked in Java for a bit
+  * Code hinting
+  * Step thru debugging
+  * Robust logging
+  * *Missed this when I returned to node*
+
+&rarr; Going to talk about how to do this stuff in node.js
 
 ---
+class: biglist
 
-barf
+# Agenda
 
 --
 
-baz
+* Logging
+???
+----
+* enabling & disabling logs
+* writing to other log systems
+--
+
+* IDE Integrations
+???
+----
+* Type hinting
+* Linting & problem finding
+* Running project tasks
+--
+
+* Step-Through Debugging
+???
+----
+* step through debugging
+* Breakpoints
+--
+
+* Advanced Debugging
+???
+----
+* CPU analysis
+* Tracking timing from browser
+* heap dump analysis
+
+---
+
+# Logging
+
+???
+* What to log
+* What tools are available
+* Enabling & disabling logging
+
+---
+name: console
+
+## The `console` Object
+???
+* Similar to browser, a couple differences
+* stdout, stderr
+
+---
+template: console
+
+### `console.log`
+--
+
+* aka `console.info`
+--
+
+* &rarr; `STDOUT`
+--
+
+* `printf` style formatting
+
+---
+class: code
+
+### `console.log` Formatting
+
+```js
+server.on('listening', function(){
+  
+  const pid = process.pid;
+  const port = server.address().port || 80;
+
+  console.log('process %d listening on port %s', pid, port);
+});
+```
+
+----
+
+```no-highlight
+process 53594 listening on 3000
+```
+
+---
+template:console
+
+### `console.error`
+--
+
+* `console.warn`
+--
+
+* &rarr; `STDERR`
+--
+
+* **Output redirection**
+???
+* Of course you can redirect stderr output to error loggers
+* outputting to stderr directs that output to some logging tools
+
+---
+
+class: code
+
+### `console.log` Formatting
+
+```js
+const pid = process.pid;
+const port = process.env.PORT;
+
+console.log('process %d listening on port %s', pid, port);
+```
+
+----
+
+```no-highlight
+process 53594 listening on 3000
+```
+
+---
+
+class: code
+
+```js
+```
+
+---
+
+class: todo
+
+## Logging
+
+* console.log
+* console.time
+* console.error
+* throwing errors
+  * try { throw 'foo'; } catch (e){ console.log('error!'); console.log(e); }
+  * try { throw new Error('it is an error'); } catch (e){ console.log('error!'); console.log(e); }
+  * error.stack
+  * error.code (POSIX)
+* Function naming
+
+---
+
+---
+
+class: todo
+
+## IDE Stuff
+
+* Type hinting:
+  * JSDoc
+  * JSONSchema
+  * Typings
+* Running tasks
+  * setting up task runner
+  * build task, running
+  * background tasks
+* Problem matchers
+  * use babel task: SyntaxError: src/index.js: Expecting Unicode escape sequence \uXXXX (2:8)
+  * maybe try using ext thing?
+
+---
+
+class: todo
+
+## IDE Stuff
+
+* Type hinting:
+  * JSDoc
+  * JSONSchema
+  * Typings
+* Running tasks
+  * setting up task runner
+  * build task, running
+  * background tasks
+* Problem matchers
+  * use babel task: SyntaxError: src/index.js: Expecting Unicode escape sequence \uXXXX (2:8)
+  * maybe try using ext thing?
+
+---
+
+class: todo
+
+## Advanced Debugging
+
+* Node debugger
+* `node --inspect`
+* sourcemaps
+
+* VS CODE Setting up
+  * launch configuration
+  * running with f5
+  * breakpoints
+    * conditional, count, etc.
+  * call stack
+  * variable
+  * watch expressions
+
 
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js" type="text/javascript">

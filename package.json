@@ -15,7 +15,7 @@
     "template": "node buildHTML.js",
     "watch-template": "watch 'npm run template' content templates",
     "watch": "npm run watch-template & npm run serve",
-    "serve": "live-server --port=8090 --watch=*.html",
+    "serve": "live-server --port=8090 --watch=*.html,css/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

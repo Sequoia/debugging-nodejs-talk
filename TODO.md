@@ -4,4 +4,4 @@
 * [x] watch script
 
 * [x] local vs. remote script variant?
-* [ ] get local copy of the script
+* [x] get local copy of the script
