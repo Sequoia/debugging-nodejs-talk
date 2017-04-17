@@ -10,6 +10,17 @@ body .remark-slide-content{
   font-size: 16pt;
 }
 
+/* Headers */
+
+.remark-slide-content h3{
+  margin-top:.5em;
+  margin-bottom:.5em;
+}
+
+.remark-slide-content h3:first-child{
+  margin:inherit;
+}
+
 /*Title screen*/
 
 .title h1{
@@ -33,5 +44,5 @@ body .remark-slide-content{
   background:#F0F0F0;
   margin:0;
   padding:1em;
-  vertical-align: middle;
+  /*vertical-align: middle;*/
 }
