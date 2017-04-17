@@ -714,13 +714,154 @@ Turn on debugger and see what you get!
 
 ## More Robust Logging: `winston`
 
+<http://github.com/winstonjs/winston>
+
+--
+.biglist[
+* Log levels
+* Multiple Transports
+* Formatting plugins
+]
+
 ???
 
-
-
+* Sometimes you want more robust logging, log levels, external transports etc.
 * Winston!
 
 ---
+
+## Winston
+
+```no-highlight
+npm install winston
+```
+
+--
+
+```js
+var winston = require('winston');
+```
+
+--
+
+```js
+winston.log('info', 'Hello distributed log files!');
+winston.log('debug','Here is some extra detailed info');
+
+//shorthands:
+
+winston.info('Hello again distributed logs');
+winston.debug('Here is more info');
+```
+
+--
+
+### Console Output
+
+```no-highlight
+info: Hello distributed log files!
+info: Hello again distributed logs
+```
+
+???
+
+No debug! Log levels
+
+---
+
+## Log Levels
+
+* 0: error
+* 1: warn
+* 2: info
+* 3: verbose
+* 4: debug
+* 5: silly
+
+???
+Reports current level **and below**
+
+--
+
+```js
+winston.level = 'info';
+winston.level = 'debug';
+```
+
+--
+
+```js
+winston.level = process.env.LOGLEVEL;
+```
+
+```no-highlight
+$ LOGLEVEL=info node app.js
+```
+
+???
+* Set log level
+* set programatically
+
+---
+
+## Winston "Transports"
+
+Extensions that send log messages somewhere.
+
+--
+
+```js
+winston.add(winston.transports.File, { filename: 'somefile.log' });
+winston.remove(winston.transports.Console);
+```
+
+???
+Example: disabling Console & enabling File
+
+--
+
+## Built in Transports
+
+* Console
+* File
+* HTTP
+
+???
+
+---
+
+## Additional Winston Transports
+
+* Syslog
+* Loggly
+* MongoDB
+* Redis
+* Riak
+* Elasticsearch
+* SimpleDB
+* Mail
+* Amazon Kinesis Firehose
+* Graylog2
+* and many more...
+
+--
+
+----
+```no-highlight
+$ npm search winston
+winston-amon         Winston transport for Amon logging                            =zoramite
+winston-amqp         An AMQP transport for winston                                 =kr1sp1n
+winston-cassandra    A Cassandra transport for winston                             =jorgebay
+winston-couchdb      a couchdb transport for winston                               =alz
+winston-express      Express middleware to let you use winston from the browser.   =regality
+winston-graylog2     A graylog2 transport for winston                              =smithclay
+winston-hbase        A HBase transport for winston                                 =ddude
+winston-loggly       A Loggly transport for winston                                =indexzero
+winston-mail         A mail transport for winston                                  =wavded
+winston-mail2        A mail transport for winston                                  =ivolo
+winston-mongodb      A MongoDB transport for winston                               =indexzero
+...
+```
 
 ---
 
