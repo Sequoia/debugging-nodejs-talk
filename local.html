@@ -220,10 +220,12 @@ try{
 try{
   throw new Error('something went wrong!');
 }catch(e){
-  console.error(e.stack); // Error: something went wrong!
-}                         //     at Object.<anonymous> (/Users/sequoia/tmp/test-app/app.js:16:11)
-                          //     at Module._compile (module.js:541:32)
-                          //     ...
+  console.error(e.stack); 
+}                         
+// Error: something went wrong!
+//     at Object.<anonymous> (/Users/sequoia/tmp/test-app/app.js:16:11)
+//     at Module._compile (module.js:541:32)
+//     ...
 ```
 
 ???
@@ -383,7 +385,8 @@ HTTP server example:
 ## Other Console APIs
 
 * **`console.trace`**: Prints stack trace to `STDERR`
-* **`console.time`**/**`console.timeEnd`**: Timer
+* **`console.time`**: Timer
+* **`console.timeEnd`**: Timer
 
 --
 
@@ -394,6 +397,8 @@ db.Users.find(function processUsers(e, users){
   //...
 });
 ```
+
+### Output
 
 ```no-highlight
 db Users query: 225.438ms
@@ -528,6 +533,8 @@ bash-3.2$ node script.js
 
 <pre class="ansi2html">
 bash-3.2$ <span class="b4">DEBUG=*</span> node script.js
+--
+
   <span class="f3"><span class="bold">my-app </span></span>test <span class="f3">+0ms</span>
   <span class="f3"><span class="bold">my-app </span></span>user: {&quot;id&quot;:12,&quot;name&quot;:&quot;Naomi&quot;} <span class="f3">+503ms</span>
 </pre>
@@ -697,15 +704,16 @@ Turn on debugger and see what you get!
 
 ## `debug` in The Browser
 
-![debug module used in the browser](/img/debug_browser.gif);
+![debug module used in the browser](img/debug_browser.gif);
 
 ---
 
-class: todo
+## More Robust Logging: `winston`
 
-## Logging
+???
 
-* Debug module!
+
+
 * Winston!
 
 ---
@@ -732,19 +740,17 @@ class: todo
 
 class: todo
 
-## IDE Stuff
+## Step Through Debugging
 
-* Type hinting:
-  * JSDoc
-  * JSONSchema
-  * Typings
-* Running tasks
-  * setting up task runner
-  * build task, running
-  * background tasks
-* Problem matchers
-  * use babel task: SyntaxError: src/index.js: Expecting Unicode escape sequence \uXXXX (2:8)
-  * maybe try using ext thing?
+* VS CODE Setting up
+  * launch configuration
+  * running with f5
+  * breakpoints
+    * conditional, count, etc.
+  * call stack
+  * variable
+  * watch expressions
+
 
 ---
 
@@ -755,15 +761,6 @@ class: todo
 * Node debugger
 * `node --inspect`
 * sourcemaps
-
-* VS CODE Setting up
-  * launch configuration
-  * running with f5
-  * breakpoints
-    * conditional, count, etc.
-  * call stack
-  * variable
-  * watch expressions
 
 ---
 

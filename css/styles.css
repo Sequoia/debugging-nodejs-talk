@@ -46,3 +46,11 @@ body .remark-slide-content{
   padding:1em;
   /*vertical-align: middle;*/
 }
+
+/* matching `no-highlight` styles to other styles */
+
+pre>code.no-highlight{
+  display:block;
+    padding: .5em;
+    background: #F0F0F0;
+}
