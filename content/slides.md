@@ -840,52 +840,738 @@ winston-mongodb      A MongoDB transport for winston                            
 
 ---
 
-class: todo
+# Interactive Debugging
 
-## IDE Stuff
+???
 
-* Type hinting:
-  * JSDoc
-  * JSONSchema
-  * Typings
-* Running tasks
-  * setting up task runner
-  * build task, running
-  * background tasks
-* Problem matchers
-  * use babel task: SyntaxError: src/index.js: Expecting Unicode escape sequence \uXXXX (2:8)
-  * maybe try using ext thing?
+* inspect or alter application state
+* see the code execution path ("call stack") that lead to the currently executing line of code, and
+* inspect the application state at earlier points on that path
+
+Debuggers are useful when writing your own, original code, but they really show their value when you're working with an unfamiliar codebase. Being able to step through the code execution line by line and function by function can save hours of poring over source code, trying to step through it in your head.
+
+--
+class:biglist
+* Built-in Debugger
+* Chrome Debugger
+* IDE Debugger
+
+---
+class:bigimage
+## Node Built-in Debugger
+
+<pre class="ansi2html">
+bash-3.2$ node debug bin/www
+</pre>
+???
+* start the debugger with `node debug` scriptname
+--
+<pre class="ansi2html">
+&lt; Debugger listening on [::]:5858
+connecting to 127.0.0.1:5858 ... ok
+break in bin/www:7
+  5  */
+  6 
+&gt; 7 <span class="f2">var</span>  app = require('../app');
+  8 var debug = require('debug')('test-app:server');
+  9 var http = require('http');
+</pre>
+???
+* breaks on first line
+* `n` to go to next line
+--
+<pre class="ansi2html">
+n
+</pre>
+--
+<pre class="ansi2html">
+break in bin/www:8
+  6
+  7 var app = require('../app');
+> 8 <span class="f2">var</span> debug = require('debug')('test-app:server');
+  9 var http = require('http');
+ 10
+</pre>
+???
+let's try help
+--
+<pre class="ansi2html">
+help
+</pre>
+--
+<pre class="ansi2html">
+Commands: run (r), cont (c), next (n), step (s), out (o), backtrace (bt), setBreakpoint (sb), clearBreakpoint (cb),
+watch, unwatch, watchers, repl, exec, restart, kill, list, scripts, breakOnException, breakpoints, version
+</pre>
+???
+let's continue
+--
+<pre class="ansi2html">
+c
+</pre>
+--
+<pre class="ansi2html">
+< process 92507 listening on 3000
+debug> .exit
+</pre>
+???
+**That's enough of that**
+
+&rarr; VSCode
 
 ---
 
-class: todo
+## Visual Studio Code
 
-## Step Through Debugging
-
-* VS CODE Setting up
-  * launch configuration
-  * running with f5
-  * breakpoints
-    * conditional, count, etc.
-  * call stack
-  * variable
-  * watch expressions
-
+![vscode with debugger running](img/nodejs_debugsession.png)
 
 ---
 
-class: todo
+class: biglist
 
-## Advanced Debugging
+## Visual Studio Code
 
-* Node debugger
-* `node --inspect`
-* sourcemaps
+* From Microsoft
+* Written in JavaScript
+* Based on Atom editor
+* Free / Open Source
+
+???
+
+&rarr; Let's look at setting up
 
 ---
 
-class: todo
+## Setting Up The Project
 
-# Styling
+```no-highlight
+$ npm install express-generator -g
+$ express test-app   # create an application
+$ cd test-app        
+$ npm install
+```
 
-* fixup lists (all big??)
+--
+```no-highlight
+$ npm start
+```
+![Express homepage](img/express-start.png)
+
+???
+
+Start with a scaffolded express app
+
+---
+
+## Launching VSCode
+
+```no-highlight
+$ code .
+```
+
+???
+
+From the app directory
+
+--
+![Newly opened VSCode](img/vscode-start.png)
+
+
+
+---
+class:biglist
+
+## Ways to Debug from VS Code
+
+1. Launch from shell and attach
+2. Launch from VSCode
+
+???
+
+Either way works, the first is slightly less work
+
+&rarr; We'll start with method 1
+
+---
+class:bigimage
+
+## Creating Launch Configurations
+
+![](img/vscode-no-launch-configs.png)
+
+???
+
+1. Click the debug icon
+2. No configurations
+3. &rarr;Click little gear icon
+
+---
+class:bigimage
+
+## Creating Launch Configurations
+![](img/vscode-generate-launchconfig.png)
+???
+Presented with choices, select Node.js
+
+---
+class:bigimage
+
+## Creating Launch Configurations
+![](img/vscode-default-launchconfig.png)
+???
+* Now there are two default launch configurations
+
+---
+
+## Default Launch Configurations
+
+```no-highlight
+test-app/.vscode/launch.json
+```
+
+```js
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceRoot}/bin/www"
+    },
+*   {
+*     "type": "node",
+*     "request": "attach",
+*     "name": "Attach to Port",
+*     "address": "localhost",
+*     "port": 5858
+*   }
+  ]
+}
+```
+
+???
+
+* This will attach to a **running** application
+* Node.js debugger has the ability to be steered by an external application
+
+---
+
+## Launch App & Attach
+
+--
+
+### 1. Launch with Debug *Server* Listening
+
+<pre class="ansi2html">
+$ node --debug bin/www
+Debugger listening on [::]:5858
+process 2377 listening on 3000
+</pre>
+
+???
+Server portion is node.js, it's like the debugger from before but **listening for a controller to drive it** (set breakpoints etc.)
+
+--
+
+### 2. Attach Debugger *Client* (VSCode)
+
+![](img/vscode-launch-attach.png)
+
+???
+Select "Attach to port" & click green arrow
+
+---
+
+class:bigimage
+## Launch App & Attach
+![](img/vscode-debug-attach-started.png)
+
+???
+Now our debugger is running, note (what you'd expect in a debugger):
+
+* Control bar on top
+  * Pause execution
+  * Step Over
+  * Restart
+  * Stop button (with a plug for "detach" because it doesn't actually stop the server)
+
+---
+class:bigimage
+
+## Set a Breakpoint
+![Setting a breakpoint on index route](img/vscode-set-breakpoint.png)
+???
+When our homepage is requested, stop code execution
+
+---
+class:bigimage
+
+## Load Page in Browser
+![Loading the page in the browser](img/load-localhost-3000-breakpoint.png)
+
+???
+Page won't actually load, just hangs
+
+---
+class:bigimage
+
+## Load Page in Browser
+![Hit first Breakpoint, VS Code loaded](img/vscode-hit-first-breakpoint.png)
+
+???
+
+**Execution is now paused**
+
+* Variables Pane:
+  * Local variables
+  * Request, Response, & Next objects (passed to function)
+  * types: **Request is IncomingMessage**, response is ServerResponse. Useful!
+  * **This is a big benefit of interactive debugging: discovering stuff you didn't know about your code**
+* Watch Expressions
+  * None yet
+* Call Stack
+* Breakpoints
+
+
+&rarr; Open the request object
+
+---
+class:bigimage
+
+## Inspecting Variables
+
+![inspecting the request object](img/vscode-inspect-variables-request.png)
+
+???
+
+
+---
+class:bigimage
+
+## Inspecting Variables
+
+![Request object: headers open](img/vscode-inspect-variables-request-2.png)
+
+???
+
+* Incoming headers object
+* HTTP Method
+* original URL
+* etc.
+
+&rarr; Let's say our issue is in the rendering itself, now we can step into deps
+
+---
+class:bigimage
+## Stepping Through Code
+
+![Click step into](img/vscode-step-into.png)
+
+---
+class:bigimage
+## Stepping Through Code
+
+![node_modules/express/lib/response.js](img/vscode-step-into-express-response.png)
+
+???
+* Stopped on line 938
+* Step over
+
+---
+class:bigimage
+## Stepping Through Code
+
+![step over button](img/vscode-step-over.png)
+
+???
+Click button
+
+---
+class:bigimage
+## Stepping Through Code
+
+![step over button](img/vscode-stepped-over.png)
+
+???
+* Now stopped on line 939
+* Step out works as you might expect: goes to return statement and breaks after exiting function
+
+---
+class:bigimage
+
+## Editing Variables
+
+![Mover hovered over VSCode variable "options.title"](img/vscode-edit-variable-express.png)
+
+???
+Double click it
+
+---
+class:bigimage
+
+## Editing Variables
+
+![options.title open for editing](img/vscode-editing-variable-express.png)
+
+???
+Double click it
+
+---
+class:bigimage
+
+## Editing Variables
+
+![Edited title](img/vscode-edited-variable-express.png)
+
+???
+&rarr; Then click "continue"
+
+---
+
+## Editing Variables
+
+![Edited title](img/vscode-edited-variable-express.png)
+
+???
+&rarr; Then click "continue"
+
+---
+
+## Editing Variables
+
+![Click continue](img/vscode-continue.png)
+
+???
+All this time our browser has been waiting!!
+
+---
+class:bigimage
+
+## Editing Variables
+
+![BROWSER with Edited title](img/browser-with-edited-title.png)
+
+???
+Changed in all the places the template places that value:
+* Title elem
+* H1
+* in content
+
+&rarr; let's say we want to go back to the caller, we stepped too far in
+
+---
+class:bigimage
+
+## Call Stack
+
+![click last stack frame](img/vscode-stack-select.png)
+
+???
+
+Q: Who sees the problem here?
+
+A: **ANONYMOUS FUNCTION**
+
+---
+class:bigimage
+
+## Call Stack
+
+![VIEWING last stack frame](img/vscode-stack-back.png)
+
+???
+
+* Now we can see the frame this function was called from
+* Note green breakpoint marker: "NOT current location"
+
+&rarr; right click
+
+---
+class:bigimage
+
+## Call Stack
+
+![RESTART last stack frame](img/vscode-stack-reload.png)
+
+---
+class:bigimage
+
+## Call Stack
+
+![RESTART last stack frame](img/vscode-stack-reloaded.png)
+
+???
+
+* Now we're back in the last frame, we can change things and start execution again
+
+### talk:
+
+* Very powerful
+* Step through your application
+* Go back
+* See who called what etc.
+
+&rarr; Relaunching from shell each time is annoying (also can't catch *startup* errors)
+&rarr; Let's set this up to load from VSCode
+
+---
+
+## Default Launch Configurations
+
+```no-highlight
+test-app/.vscode/launch.json
+```
+
+```js
+{
+  "version": "0.2.0",
+  "configurations": [
+*   {
+*     "type": "node",
+*     "request": "launch",
+*     "name": "Launch Program",
+*     "program": "${workspaceRoot}/bin/www"
+*   },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Port",
+      "address": "localhost",
+      "port": 5858
+    }
+  ]
+}
+```
+
+???
+
+* Launch with node
+* "program" = startup script
+* "workspace root": VScode gives you lots of variables
+
+&rarr; Where did this configuration come from?
+
+---
+
+## `package.json`
+
+```js
+{
+  "name": "test-app",
+  "version": "0.0.0",
+  "private": true,
+* "scripts": {
+*   "start": "node ./bin/www"
+* },
+  "dependencies": {
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.0",
+    "express": "~4.14.1",
+    "jade": "~1.11.0",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.2",
+    "winston": "^2.3.1"
+  }
+}
+```
+
+???
+
+VSCode will look for startup configurations in your package.json and automatically set them as launch configs
+
+Here we have `npm start` but it will also pickup `package.main` if one exists
+
+&rarr; Kill our running script then launch from VSCode
+
+---
+class:bigimage
+
+## Launch from VSCode
+![mouse over "launch" button](img/vscode-debug-launch.png)
+
+???
+* Now we can launch straight from VSCode
+
+&rarr; Nice because we can break on startup
+&rarr; I added a breakpoint
+
+---
+
+## Launch from VSCode
+![break on line 1](img/vscode-launch-break-line-one.png)
+
+???
+
+* Also you can (re)launch with F5 making it easy to change & relaunch
+* Note that the debug output (console) is now inside vscode
+
+---
+
+## More Launch Configurations
+
+```no-highlight
+$ NODE_ENV=development node ./node_modules/.bin/node-lambda run
+```
+
+--
+
+```js
+{
+    "version": "0.3.0",
+    "configurations": [
+    {
+      "name": "Launch",
+      "type": "node",
+      "request": "launch",
+*     "program": "${workspaceRoot}/node_modules/.bin/node-lambda",
+      "stopOnEntry": false,
+*     "args": ["run"],
+*     "cwd": "${workspaceRoot}",
+      "preLaunchTask": null,
+      "runtimeExecutable": null,
+      "runtimeArgs": [
+        "--nolazy"
+      ],
+*     "env": {
+*       "NODE_ENV": "development"
+*     },
+      "externalConsole": false,
+      "sourceMaps": false,
+      "outDir": null
+    }
+...
+}
+```
+
+???
+
+Starting from a utility script in node_modules
+
+* CWD is also important
+
+---
+
+## More Launch Configs
+
+```js
+{
+    "version": "0.3.0",
+    "configurations": [
+    {
+      "name": "Launch",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/.bin/node-lambda",
+*     "stopOnEntry": false,
+      "args": ["run"],
+      "cwd": "${workspaceRoot}",
+*     "preLaunchTask": null,
+      "runtimeExecutable": null,
+      "runtimeArgs": [
+        "--nolazy"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "externalConsole": false,
+*     "sourceMaps": false,
+      "outDir": null
+    }
+...
+}
+```
+
+???
+* Stop on startup immediately
+* preLaunchTask (if you have a build task like babel)
+  * Won't go into that here
+* Sourcemaps!
+
+&rarr; With that setup let's check some of the other features
+
+---
+
+## Break on Exceptions
+
+???
+
+* Checked by default
+
+--
+
+```js
+var express = require('express');
+var router = express.Router();
+
+*router.use(express.static());
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+module.exports = router;
+```
+
+???
+adding static middleware....
+
+---
+
+## Break on Exceptions
+
+![](img/vscode-root-path-required.png)
+
+---
+
+## Break on Exceptions
+
+![](img/vscode-root-path-up-stack.png)
+
+???
+
+Also "Break on ALL Exceptions" (even handled ones) &rarr; Be prepared for a lot of noise
+
+---
+
+## Conditional Breakpoints
+
+![](img/vscode-conditional-breakpoints.png)
+
+???
+* Enter a condition
+  * only admin
+  * stop when some program condition is true &rarr; useful for when you have a hard to reproduce case
+* hit count: Not so useful here but useful if something is getting called 2x and you only want it called 1x (where is second call coming from?)
+
+More breakpoints I'm not going over!
+
+* Column (for minified code)
+* Function name (break when fn by that name is executed)
+
+---
+
+## Watch Expressions
+
+![watch expressions](img/vscode-watch-expressions.png);
+
+???
+Any time program is paused, it will show the current value **in the current scope**
+
+* process.pid
+* req.query.user
+
+Useful to track change of something through steps, see where it changed
+
+---
+
+## Debug Console
+
+![watch expressions](img/vscode-debug-console.png);
+
+???
+
+* Execute code in the current context
+* Also a good way to explore in-memory objects

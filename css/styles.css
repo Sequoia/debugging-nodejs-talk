@@ -29,7 +29,7 @@ body .remark-slide-content{
 
 /* slide styles */
 
-.biglist ul{
+.biglist ul, .biglist ol{
   list-style-type:circle;
   font-size:2em;
   line-height:1.5em;
@@ -47,10 +47,28 @@ body .remark-slide-content{
   /*vertical-align: middle;*/
 }
 
+.remark-slide-content h1:first-child,
+.remark-slide-content h2:first-child,
+.remark-slide-content h3:first-child
+{
+  margin-top:0;
+  margin-bottom:.2em;
+}
+
 /* matching `no-highlight` styles to other styles */
 
 pre>code.no-highlight{
-  display:block;
+    display:block;
     padding: .5em;
     background: #F0F0F0;
+}
+
+/* image */
+img{
+  width:100%;
+}
+
+/* pushing two pres together across a transition */
+pre.ansi2html+pre.ansi2html{
+  margin-top:-2em;
 }
