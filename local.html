@@ -1597,6 +1597,134 @@ Useful to track change of something through steps, see where it changed
 * Execute code in the current context
 * Also a good way to explore in-memory objects
 
+---
+class:biglist
+# Chrome Devtools
+
+* Use Chrome as debug "*client*"
+* Outside the IDE 🙁
+* More Advanced Debugging Features 😄
+
+---
+# Node Inspector Installation
+
+<pre class="ansi2html">
+$ npm install -g node-inspector
+$ node-inspect my-script.js
+</pre>
+
+???
+
+Node-inspector is the name of the tool that links chrome devtools to node.js
+
+---
+# ~~Node Inspector Installation~~
+
+<pre class="ansi2html">
+<strike>$ npm install -g node-inspector</strike>
+<strike>$ node-inspect my-script.js</strike>
+</pre>
+
+## ✨ Bundled with Node (6.3+)✨
+
+<pre class="ansi2html">
+$ node --inspect my-script
+</pre>
+
+&rarr; Quick review of debug startup methods...
+
+---
+
+## Debug *in Terminal*
+
+<pre class="ansi2html">
+$ node <span class="b4">debug</span> my-app.js
+< Debugger listening on [::]:5858
+connecting to 127.0.0.1:5858 ... ok
+break in my-app:7
+...
+</pre>
+
+--
+
+## Listen for *VSCode* Debugger
+
+<pre class="ansi2html">
+$ node <span class="b4">--debug</span> my-app.js
+Debugger listening on [::]:5858
+[[attach vs-code]]
+```
+</pre>
+
+--
+
+## Listen for *Chrome* Debugger
+
+<pre class="ansi2html">
+$ node <span class="b4">--inspect</span> my-app.js
+Debugger listening on port 9229.
+Warning: This is an experimental feature and could change at any time.
+To start debugging, open the following URL in Chrome:
+    chrome-devtools://devtools/remote/serve_file/@521e5b7e2b7cc66b4006a8a54cb9c4e57494a5ef/inspector.html?experiments=true&v8only=true&ws=localhost:9229/node
+</pre>
+
+---
+
+# Chrome Debugger
+
+<pre class="ansi2html">
+$ node <span class="b4">--inspect</span> my-app.js
+Debugger listening on port 9229.
+Warning: This is an experimental feature and could change at any time.
+To start debugging, open the following URL in Chrome:
+    chrome-devtools://devtools/remote/serve_file/@521e5b7e2b7cc66b4006a8a54cb9c4e57494a5ef/inspector.html?experiments=true&v8only=true&ws=localhost:9229/node
+</pre>
+
+---
+
+# Chrome Debugger
+
+![chrome debugger](img/chrome-debugger.png)
+
+???
+
+&rarr; Why would you use this instead?
+
+---
+class:biglist
+
+## Advantages (over VSCode) ✅
+
+* CPU profiling
+* Heap snapshots & analysis 
+* Don't need to use VS Code
+
+--
+
+## Disadvantages ❌
+
+* Outside your IDE
+* Some non-node related cruft
+
+--
+
+## ✅✅✅ Use both!
+
+???
+
+They do different things
+
+Use VS-Code for dev, chrome when you need more advanced debugging
+
+A
+
+&rarr; breakpoints, watch expressions etc. are about the same (vscode has a slight edge in places)
+&rarr; **Profiling** is what chrome inspector is good for
+
+---
+
+## Chrome: Pro
+
     </textarea>
     <script src="/lib/remark.min.js" type="text/javascript">
     </script>

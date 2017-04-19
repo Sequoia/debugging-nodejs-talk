@@ -33,6 +33,8 @@ body .remark-slide-content{
   list-style-type:circle;
   font-size:2em;
   line-height:1.5em;
+  margin-bottom:.5em;
+  margin-top:.5em;
 }
 
 .todo {
@@ -47,9 +49,9 @@ body .remark-slide-content{
   /*vertical-align: middle;*/
 }
 
-.remark-slide-content h1:first-child,
-.remark-slide-content h2:first-child,
-.remark-slide-content h3:first-child
+h1,
+h2,
+h3
 {
   margin-top:0;
   margin-bottom:.2em;

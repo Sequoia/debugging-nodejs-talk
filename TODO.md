@@ -10,26 +10,15 @@
 
 In order of importance of getting it written, can reorganize later
 
-## Step Through Debugging
-
-* VS CODE Setting up
-  * launch configuration
-  * running with f5
-  * breakpoints
-    * conditional, count, etc.
-  * call stack
-  * variable
-  * watch expressions
-
 ## Advanced debugging
 
-* Node debugger
-* `node --inspect`
-* CPU snapshots
-* Heap dump
-* Flame charts
+* [x]Node debugger
+* [x]`node --inspect`
+* [ ]CPU snapshots
+* [ ]Heap dump
+* [ ]Flame charts
 
-## IDE Stuff
+## IDE Stuff ?
 
 * Type hinting:
   * JSDoc
@@ -56,7 +45,7 @@ In order of importance of getting it written, can reorganize later
     * maybe try using ext thing?
 * sourcemaps
 
-
+* Chrome server-timing headers?
 
 ---
 
@@ -72,3 +61,15 @@ class: todo
 * [ ] fixup lists (all big??)
 * [ ] Annotate images with big red arrows
 * [ ] make a list of possible demos for the end
+
+
+# Cut
+
+---
+
+## Setting up other configurations
+
+* https://code.visualstudio.com/images/debugging_add-config.gif
+* arguments
+* env vars
+* tons of other configurations
