@@ -2,12 +2,13 @@
 
 .remark-slide-content{
   /*vertical-align: middle;*/
+  padding: 1em 3em; /* reduce cuz I'm increasing text size*/
 }
 
 /* Text */
 body .remark-slide-content{
   font-family: 'Open Sans', sans-serif;
-  font-size: 16pt;
+  font-size: 20pt;
 }
 
 /* Headers */

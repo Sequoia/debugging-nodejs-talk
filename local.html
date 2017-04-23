@@ -4,9 +4,10 @@
     <title>My Awesome Presentation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
-      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+     /*  @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      */
 /*
       body { font-family: 'Droid Serif'; }
       h1, h2, h3 {
@@ -14,7 +15,12 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }*/
+      @import url('https://fonts.googleapis.com/css?family=Open+Sans');
     </style>
+
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link type="text/css" rel="stylesheet" href="css/ansi2html.css" />
+
   </head>
   <body>
     <textarea id="source">
@@ -83,10 +89,22 @@ class: biglist
 
 # Logging
 
-???
 * What to log
 * What tools are available
 * Enabling & disabling logging
+
+---
+
+# Node Core APIs
+
+* `console`
+  * `log`
+  * `error`
+  * `timer`
+* Errors
+
+???
+Talk a
 
 ---
 name: console
@@ -148,7 +166,7 @@ template:console
 * &rarr; `STDERR`
 --
 
-* **Output redirection**
+  * **Output redirection**
 ???
 * Of course you can redirect stderr output to error loggers
 * outputting to stderr directs that output to some logging tools
@@ -192,6 +210,83 @@ class:biglist
 ???
 
 &rarr; Stack only exists if you throw an ERROR!!
+
+
+---
+class:biglist
+
+## System Errors
+
+* `error.code`
+* `error.errno`
+* `error.syscall`
+* `error.path`
+* `error.address`
+* `error.port`
+
+???
+* Regular JS errors but augmented with more info
+* From system/OS
+* Not all these keys will be present
+
+---
+
+## `error.code`
+
+.biglist[
+* Always start with "`E`"
+* From OS
+* Defined by POSIX error codes
+]
+
+???
+
+Other things may be set, depends on OS
+
+--
+
+* `EACCES`
+* `EADDRINUSE`
+* `ECONNREFUSED`
+* `ECONNRESET`
+* etc.
+
+---
+
+## `error.code`
+
+```js
+fs.readFile(filename, function(err, data){
+  if(err){
+    if (err.code === 'EACCES'){
+      response.statusCode = '403';
+      response.statusMessage = 'Access Denied!!';
+    }
+    if (err.code === 'ENOENT'){
+      response.statusCode = '404';
+      response.statusMessage = 'Not found';
+    }else{
+      // something else
+      response.statusCode = '500';
+      response.statusMessage = 'Something happened... :(';
+    }
+    return response.end()
+  }
+  //...
+})
+```
+???
+HTTP server example:
+
+* Translate system error code to HTTP error code
+
+---
+
+# Debugging Tips
+
+1. Throw `Error` Objects
+2. Name Functions
+3. Use Assert
 
 ---
 
@@ -312,73 +407,6 @@ assert.equal(typeof cfg.port, 'number'), 'port must be a number');
 * Like asserts in java!
 * Makes error with stack trace + optional message
 
----
-class:biglist
-
-## System Errors
-
-* `error.code`
-* `error.errno`
-* `error.syscall`
-* `error.path`
-* `error.address`
-* `error.port`
-
-???
-* Regular JS errors but augmented with more info
-* From system/OS
-* Not all these keys will be present
-
----
-
-## `error.code`
-
-.biglist[
-* Always start with "`E`"
-* From OS
-* Defined by POSIX error codes
-]
-
-???
-
-Other things may be set, depends on OS
-
---
-
-* `EACCES`
-* `EADDRINUSE`
-* `ECONNREFUSED`
-* `ECONNRESET`
-* etc.
-
----
-
-## `error.code`
-
-```js
-fs.readFile(filename, function(err, data){
-  if(err){
-    if (err.code === 'EACCES'){
-      response.statusCode = '403';
-      response.statusMessage = 'Access Denied!!';
-    }
-    if (err.code === 'ENOENT'){
-      response.statusCode = '404';
-      response.statusMessage = 'Not found';
-    }else{
-      // something else
-      response.statusCode = '500';
-      response.statusMessage = 'Something happened... :(';
-    }
-    return response.end()
-  }
-  //...
-})
-```
-???
-HTTP server example:
-
-* Translate system error code to HTTP error code
 
 ---
 
@@ -387,6 +415,8 @@ HTTP server example:
 * **`console.trace`**: Prints stack trace to `STDERR`
 * **`console.time`**: Timer
 * **`console.timeEnd`**: Timer
+
+Todo : Move this up/cut?
 
 --
 
@@ -421,10 +451,10 @@ db.Users.find({id: id}, function(e, user){
 })
 ```
 ```js
-app.get('/posts/:id', function handleIndex(req, res){
+app.get('/posts/:id', function showPost(req, res){
   console.log('post %s requested', req.params.id);
 })
-app.get('/users/:id', function handleIndex(req, res){
+app.get('/users/:id', function showUser(req, res){
   console.log('user %s requested', req.params.id);
 })
 ```
@@ -488,6 +518,10 @@ db.on('query', function(query){
   //console.log('querying database: %s', query.query);
 })
 ```
+
+--
+
+*"There's got to be a better way!"*
 
 ???
 But later you need them, so you add them back
@@ -1236,17 +1270,7 @@ class:bigimage
 ![options.title open for editing](img/vscode-editing-variable-express.png)
 
 ???
-Double click it
-
----
-class:bigimage
-
-## Editing Variables
-
-![Edited title](img/vscode-edited-variable-express.png)
-
-???
-&rarr; Then click "continue"
+Now edit (note quotes for string)
 
 ---
 
@@ -1255,7 +1279,7 @@ class:bigimage
 ![Edited title](img/vscode-edited-variable-express.png)
 
 ???
-&rarr; Then click "continue"
+&rarr; click continue
 
 ---
 
@@ -1264,6 +1288,7 @@ class:bigimage
 ![Click continue](img/vscode-continue.png)
 
 ???
+&rarr; Then click "continue"
 All this time our browser has been waiting!!
 
 ---
@@ -1653,7 +1678,6 @@ break in my-app:7
 $ node <span class="b4">--debug</span> my-app.js
 Debugger listening on [::]:5858
 [[attach vs-code]]
-```
 </pre>
 
 --
@@ -1723,13 +1747,164 @@ A
 
 ---
 
-## Chrome: Pro
+## Chrome: Profiling
+
+![chrome profiler overview](img/chrome-profiles-overview.png)
+
+???
+* In the profiles tab
+
+### Tools
+* Record JavaScript CPU Profile - see where execution time is spent, CPU spikes etc.
+* Heap snapshot: show what's using memory
+* and more!
+
+&rarr; Start with taking a CPU profile
+&rarr; Run some requests against our simple Node.js server with three routes: fibonacci, index, and one that loops and generates arrays of numbers
+
+---
+
+## Three Routes:
+
+```js
+*router.get('/', function handleIndex(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+*router.get('/fibonacci/:iters', function handleFibonacci(req, res, next) {
+    var num = fibonacci(Number(req.params.iters) || 10);
+    res.render('fib', { number: num, /*...*/} )
+});
+
+*router.get('/loop/:iters', function loopHandler(req, res, next){
+  /* ... */
+  res.send(ray.map(nums => nums.join(', ')).join('<br>'));
+});
+```
+
+???
+
+Important bit now is the function names:
+
+* handleIndex
+* handleFibonacci
+* loopHandler
+
+&rarr; Run some requests against our simple Node.js server with three routes: fibonacci, index, and one that loops and generates arrays of numbers
+
+---
+
+## CPU Profiling: Flame Charts
+
+![normal request](img/flame-normal-request.png)
+
+???
+
+Zoomed in on a couple requests here
+
+What are we looking at? This is about 10 seconds of running Express app
+
+* Each colored bar is a function call or frame
+* Lower frames are callers, call next one down
+* Anonymous function calls onstat which calls next etc.
+* Height is call depth
+* Width is CPU time
+* Colored by file
+
+Note pink says "handleIndex" that's our handler function
+
+&rarr; hover over it
+
+---
+
+## CPU Profiling: Flame Charts
+
+![normal request](img/flame-normal-request-hover.png)
+
+???
+
+Takes about 6 ms
+
+---
+
+## High CPU Functions
+
+![really wide flame request](img/flame-wide-loop.png)
+
+???
+
+Really wide bars on our handleLoop!
+
+---
+
+## High CPU Functions
+
+![wide flame request hovered: 61ms on one call](img/flame-wide-loop-hover.png)
+
+???
+
+Hover: 61ms 
+
+&rarr; Click to jump to the code
+
+---
+
+## High CPU Functions
+
+![](img/flame-clicked-to-loop.png)
+
+???
+
+&larr; Jumped right to the line of code, with that line highlighted!
+
+&rarr; Another way to look is as a chart
+
+---
+
+## CPU Call Chart
+
+![](img/cpu-chart-heavy-loop.png)
+
+???
+
+Here you can see **by function** how much time was spent
+
+&rarr; In our case we can see it's our loop handler function
+
+---
+
+## CPU Call Chart
+
+![](img/cpu-chart-heavy-loop-hovered.png)
+
+???
+
+* This is another way of identifying issues
+* Good if there's one function that's called from *many places* but **takes a lot of time in total**
+
+&rarr; Wide bar in our flame graph is lots of CPU, deep is.....
+
+---
+
+## Flame Charts: Recursion
+
+![](img/flame-fibonacci.png)
+
+???
+
+&larr; ... lots of recurions
+
+* Here our fibonacci function is very deep call
+
+---
 
     </textarea>
     <script src="/lib/remark.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+      var slideshow = remark.create({
+        highlightLines: true
+      });
     </script>
   </body>
 </html>
