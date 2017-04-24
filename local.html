@@ -1868,6 +1868,11 @@ Aha! We can see this readable stream has a "path" property that points to letter
       var slideshow = remark.create({
         highlightLines: true
       });
+      document.body.addEventListener('keydown', function(event){
+        if(event.code === 'Escape' || event.code === 'F5'){
+          slideshow.toggleBlackout();
+        }
+      });
     </script>
   </body>
 </html>
