@@ -1,11 +1,18 @@
 class: title
 # Debugging Node.js
 
+![Great Indian Developer Summit](img/GIDSLogo.jpg)
+
+--
+
 ## Sequoia McDowell
 
+.small-list[
 * 🌐  http://sequoia.makes.software
 * 🦆  @_sequoia
 * 📧  sequoia.mcdowell@gmail.com
+]
+
 
 ???
 
@@ -29,19 +36,14 @@ class: biglist
 
 --
 
+* General Debugging Tips
+--
+
 * Logging
 ???
 ----
 * enabling & disabling logs
 * writing to other log systems
---
-
-* IDE Integrations
-???
-----
-* Type hinting
-* Linting & problem finding
-* Running project tasks
 --
 
 * Step-Through Debugging
@@ -57,201 +59,6 @@ class: biglist
 * CPU analysis
 * Tracking timing from browser
 * heap dump analysis
-
----
-
-# Logging
-
-* What to log
-* What tools are available
-* Enabling & disabling logging
-
----
-
-# Node Core APIs
-
-* `console`
-  * `log`
-  * `error`
-  * `timer`
-* Errors
-
-???
-Talk a
-
----
-name: console
-
-# The `console` Object
-???
-* Similar to browser, a couple differences
-* stdout, stderr
-
----
-template: console
-
-## `console.log`
---
-
-* aka `console.info`
---
-
-* &rarr; `STDOUT`
---
-
-* `sprintf` style formatting
-
----
-
-## `console.log` sprintf
-
-```js
-server.on('listening', function(){
-  
-  const pid = process.pid;
-  const port = server.address().port || 80;
-
-  console.log('process %d listening on port %d', pid, port);
-});
-```
-
-???
-
-* It's like SPRINTF
-
---
-----
-
-```no-highlight
-$ node server.js
-process 53594 listening on 3000
-```
-
----
-template:console
-
-## `console.error`
---
-
-* `console.warn`
---
-
-* &rarr; `STDERR`
---
-
-  * **Output redirection**
-???
-* Of course you can redirect stderr output to error loggers
-* outputting to stderr directs that output to some logging tools
-
---> output redirection
-
----
-
-## `console.log` sprintf
-
-```js
-server.on('error', function(e){
-  console.error(e);
-  //other error handling
-});
-```
-
---
-
-```no-highlight
-$ node server.js 2>>/var/logs/server.log
-$ cat /var/logs/server.log
-Port 3000 is already in use
-```
-
-???
-
-**Uses standard UNIX idioms!!**
-
-* there are more advanced tools we'll talk about but relying on the OS & standard conventions is great when possible
-* No need to reinvent the wheel
-
----
-class:biglist
-
-# The `Error` Object
-
-* `e.message`
-* `e.stack`
-
-???
-
-&rarr; Stack only exists if you throw an ERROR!!
-
-
----
-class:biglist
-
-## System Errors
-
-* `error.code`
-* `error.errno`
-* `error.syscall`
-* `error.path`
-* `error.address`
-* `error.port`
-
-???
-* Regular JS errors but augmented with more info
-* From system/OS
-* Not all these keys will be present
-
----
-
-## `error.code`
-
-.biglist[
-* Always start with "`E`"
-* From OS
-* Defined by POSIX error codes
-]
-
-???
-
-Other things may be set, depends on OS
-
---
-
-* `EACCES`
-* `EADDRINUSE`
-* `ECONNREFUSED`
-* `ECONNRESET`
-* etc.
-
----
-
-## `error.code`
-
-```js
-fs.readFile(filename, function(err, data){
-  if(err){
-    if (err.code === 'EACCES'){
-      response.statusCode = '403';
-      response.statusMessage = 'Access Denied!!';
-    }
-    if (err.code === 'ENOENT'){
-      response.statusCode = '404';
-      response.statusMessage = 'Not found';
-    }else{
-      // something else
-      response.statusCode = '500';
-      response.statusMessage = 'Something happened... :(';
-    }
-    return response.end()
-  }
-  //...
-})
-```
-???
-HTTP server example:
-
-* Translate system error code to HTTP error code
 
 ---
 
@@ -280,6 +87,8 @@ try{
 ???
 * no stack
 
+"A JavaScript **exception** is a **value that is thrown** as a result of an invalid operation or as the target of a throw statement. While it is not required that these values are instances of Error or classes which inherit from Error, **all exceptions thrown by Node.js or the JavaScript runtime will be instances of Error**."
+
 --
 
 ### ✅
@@ -299,9 +108,6 @@ try{
 ???
 * With stack trace!
 
-"A JavaScript **exception** is a **value that is thrown** as a result of an invalid operation or as the target of a throw statement. While it is not required that these values are instances of Error or classes which inherit from Error, **all exceptions thrown by Node.js or the JavaScript runtime will be instances of Error**."
-
-
 ---
 
 ## ℹ️ Name Functions
@@ -315,17 +121,6 @@ fs.read(filename, function(err, results){ /*...*/})
 
 --
 
-### ✅ Named Functions
-```js
-db.connect(config, function dbReady(connection){ /*...*/})
-Users.findAll(function handleResults(results){ /*...*/})
-fs.read(filename, function processFiles(err, results){ /*...*/})
-```
-
----
-
-## ℹ️ Name Functions
-
 ### ❌ Anonymous Functions
 ```no-highlight
 Uncaught TypeError: Cannot read property 'name' of undefined
@@ -334,6 +129,17 @@ Uncaught TypeError: Cannot read property 'name' of undefined
   (anonymous function) @ bar.js:202
   (anonymous function) @ baz.js:11
   ...
+```
+
+---
+
+## ℹ️ Name Functions
+
+### ✅ Named Functions
+```js
+db.connect(config, function dbReady(connection){ /*...*/})
+Users.findAll(function handleResults(results){ /*...*/})
+fs.read(filename, function processFiles(err, results){ /*...*/})
 ```
 
 --
@@ -379,39 +185,6 @@ assert.equal(typeof cfg.port, 'number'), 'port must be a number');
 
 * Like asserts in java!
 * Makes error with stack trace + optional message
-
-
----
-
-## Other Console APIs
-
-* **`console.trace`**: Prints stack trace to `STDERR`
-* **`console.time`**: Timer
-* **`console.timeEnd`**: Timer
-
-Todo : Move this up/cut?
-
---
-
-```js
-console.time('db Users query');
-db.Users.find(function processUsers(e, users){
-  console.timeEnd('db Users query');
-  //...
-});
-```
-
-### Output
-
-```no-highlight
-db Users query: 225.438ms
-```
-
-???
-* Prints to stdout
-* We'll look at more useful ways to capture timing info later on
-
-&rarr; improved console.logging
 
 ---
 
@@ -571,7 +344,7 @@ app.get('/posts/:id', function handleIndex(req, res){
 --
 
 <pre class="ansi2html">
-bash-3.2$ <span class="b4">DEBUG=my-app</span> script.js
+bash-3.2$ <span class="b4">DEBUG=my-app</span> node script.js
 --
 
   <span class="f3"><span class="bold">my-app </span></span>looking up user {id: 123} <span class="f3">+96ms</span>
@@ -774,12 +547,14 @@ No debug! Log levels
 
 ## Log Levels
 
+.small-list[
 * 0: error
 * 1: warn
 * 2: info
 * 3: verbose
 * 4: debug
 * 5: silly
+]
 
 ???
 Reports current level **and below**
@@ -835,6 +610,7 @@ Example: disabling Console & enabling File
 
 ## Additional Winston Transports
 
+.small-list[
 * Syslog
 * Loggly
 * MongoDB
@@ -846,6 +622,7 @@ Example: disabling Console & enabling File
 * Amazon Kinesis Firehose
 * Graylog2
 * and many more...
+]
 
 --
 
@@ -872,6 +649,10 @@ winston-mongodb      A MongoDB transport for winston                            
 
 ???
 
+This is something common in Java, .Net, and other worlds, but unfamiliar to many JS devs. **this should change!!**
+
+I will explain how to do this and explain what an I.D. does generally, so if you're familiar with it this will be some review
+
 * inspect or alter application state
 * see the code execution path ("call stack") that lead to the currently executing line of code, and
 * inspect the application state at earlier points on that path
@@ -885,7 +666,7 @@ class:biglist
 * IDE Debugger
 
 ---
-class:bigimage
+
 ## Node Built-in Debugger
 
 <pre class="ansi2html">
@@ -1021,7 +802,7 @@ Either way works, the first is slightly less work
 &rarr; We'll start with method 1
 
 ---
-class:bigimage
+
 
 ## Creating Launch Configurations
 
@@ -1034,7 +815,7 @@ class:bigimage
 3. &rarr;Click little gear icon
 
 ---
-class:bigimage
+
 
 ## Creating Launch Configurations
 ![](img/vscode-generate-launchconfig.png)
@@ -1042,7 +823,7 @@ class:bigimage
 Presented with choices, select Node.js
 
 ---
-class:bigimage
+
 
 ## Creating Launch Configurations
 ![](img/vscode-default-launchconfig.png)
@@ -1111,7 +892,7 @@ Select "Attach to port" & click green arrow
 
 ---
 
-class:bigimage
+
 ## Launch App & Attach
 ![](img/vscode-debug-attach-started.png)
 
@@ -1125,7 +906,7 @@ Now our debugger is running, note (what you'd expect in a debugger):
   * Stop button (with a plug for "detach" because it doesn't actually stop the server)
 
 ---
-class:bigimage
+
 
 ## Set a Breakpoint
 ![Setting a breakpoint on index route](img/vscode-set-breakpoint.png)
@@ -1133,7 +914,7 @@ class:bigimage
 When our homepage is requested, stop code execution
 
 ---
-class:bigimage
+
 
 ## Load Page in Browser
 ![Loading the page in the browser](img/load-localhost-3000-breakpoint.png)
@@ -1142,7 +923,7 @@ class:bigimage
 Page won't actually load, just hangs
 
 ---
-class:bigimage
+
 
 ## Load Page in Browser
 ![Hit first Breakpoint, VS Code loaded](img/vscode-hit-first-breakpoint.png)
@@ -1165,7 +946,7 @@ class:bigimage
 &rarr; Open the request object
 
 ---
-class:bigimage
+
 
 ## Inspecting Variables
 
@@ -1173,9 +954,12 @@ class:bigimage
 
 ???
 
+We opened the request object and if we scroll down
+
+&rarr; We can see...
 
 ---
-class:bigimage
+
 
 ## Inspecting Variables
 
@@ -1183,40 +967,60 @@ class:bigimage
 
 ???
 
-* Incoming headers object
+* **Incoming headers object** &rarr; Open this
 * HTTP Method
 * original URL
 * etc.
 
+Good way to discover what's available
+
 &rarr; Let's say our issue is in the rendering itself, now we can step into deps
 
 ---
-class:bigimage
+
 ## Stepping Through Code
 
 ![Click step into](img/vscode-step-into.png)
 
+???
+
+We want to debug the render function that's being called, so click **step into** 
+
+(*little arrow pointing down*)
+
+(or F11)
+
+**Step Into a function call**
+
 ---
-class:bigimage
+
 ## Stepping Through Code
 
 ![node_modules/express/lib/response.js](img/vscode-step-into-express-response.png)
 
 ???
 * Stopped on line 938
-* Step over
+
+**We want to see what gets assigned to `app`**, so
+
+Let's let this line execute and stop on the next line
+
+&rarr; Step over
 
 ---
-class:bigimage
+
 ## Stepping Through Code
 
 ![step over button](img/vscode-step-over.png)
 
 ???
-Click button
+
+Click (little arc button)
+
+(Or F10)
 
 ---
-class:bigimage
+
 ## Stepping Through Code
 
 ![step over button](img/vscode-stepped-over.png)
@@ -1225,18 +1029,40 @@ class:bigimage
 * Now stopped on line 939
 * Step out works as you might expect: goes to return statement and breaks after exiting function
 
+&rarr; Let's look at editing variables in the value pane
+
 ---
-class:bigimage
 
 ## Editing Variables
+
+???
+If in the course of your work you find yourself testing by:
+
+* change value
+* restart script
+* change value
+* restart script...
+
+You'll like this feature: edit variables in memory in a running application without restarting
+
+&rarr; We're stopped on line 929
+
+--
 
 ![Mover hovered over VSCode variable "options.title"](img/vscode-edit-variable-express.png)
 
 ???
-Double click it
+
+----
+
+I've moused over the "options" object, options are the object passed to the template engine
+
+Here you can see it has a `title` property: let's change that.
+
+&rarr; Double click it
 
 ---
-class:bigimage
+
 
 ## Editing Variables
 
@@ -1245,6 +1071,8 @@ class:bigimage
 ???
 Now edit (note quotes for string)
 
+&rarr; hit **Enter**
+
 ---
 
 ## Editing Variables
@@ -1252,7 +1080,9 @@ Now edit (note quotes for string)
 ![Edited title](img/vscode-edited-variable-express.png)
 
 ???
-&rarr; click continue
+Now string is replaced
+
+&rarr; Now I'm going to click &rarr;continue
 
 ---
 
@@ -1262,25 +1092,28 @@ Now edit (note quotes for string)
 
 ???
 &rarr; Then click "continue"
+
+(Or f5)
+
 All this time our browser has been waiting!!
 
 ---
-class:bigimage
+
 
 ## Editing Variables
 
 ![BROWSER with Edited title](img/browser-with-edited-title.png)
 
 ???
-Changed in all the places the template places that value:
-* Title elem
-* H1
-* in content
+
+...and our template rendered with the new value we set, from the debugger.
+
+**Bahot acha!**
 
 &rarr; let's say we want to go back to the caller, we stepped too far in
 
 ---
-class:bigimage
+
 
 ## Call Stack
 
@@ -1288,12 +1121,14 @@ class:bigimage
 
 ???
 
-Q: Who sees the problem here?
+**We're back on line 938 as we were before** but this time we're not going to hit continue
+
+Q: Can anyone see the problem in my call stack?
 
 A: **ANONYMOUS FUNCTION**
 
 ---
-class:bigimage
+
 
 ## Call Stack
 
@@ -1307,14 +1142,18 @@ class:bigimage
 &rarr; right click
 
 ---
-class:bigimage
+
 
 ## Call Stack
 
 ![RESTART last stack frame](img/vscode-stack-reload.png)
 
+???
+
+**Restart frame**: This will rewind code execution to this frame
+
 ---
-class:bigimage
+
 
 ## Call Stack
 
@@ -1405,15 +1244,18 @@ Here we have `npm start` but it will also pickup `package.main` if one exists
 &rarr; Kill our running script then launch from VSCode
 
 ---
-class:bigimage
+
 
 ## Launch from VSCode
 ![mouse over "launch" button](img/vscode-debug-launch.png)
 
 ???
+Going to click the little green "launch" button
+
+(Or f5)
+
 * Now we can launch straight from VSCode
 
-&rarr; Nice because we can break on startup
 &rarr; I added a breakpoint
 
 ---
@@ -1426,6 +1268,8 @@ class:bigimage
 * Also you can (re)launch with F5 making it easy to change & relaunch
 * Note that the debug output (console) is now inside vscode
 
+&rarr; We used default launch configs but they can get more complex:
+
 ---
 
 ## More Launch Configurations
@@ -1436,31 +1280,35 @@ $ NODE_ENV=development node ./node_modules/.bin/node-lambda run
 
 --
 
+.small-list[
+* Script: `./node_modules/.bin/node-lambda`
+* Argument: `run`
+* Environment variables: `NODE_ENV=development`
+]
+
+???
+Lets say I have a command like this:
+
+* run `node-lambda` (from node modules)
+* with the argument `run`
+* with environment variable `NODE_ENV=development`
+
+--
+
 ```js
 {
     "version": "0.3.0",
-    "configurations": [
-    {
+    "configurations": [{
       "name": "Launch",
       "type": "node",
       "request": "launch",
 *     "program": "${workspaceRoot}/node_modules/.bin/node-lambda",
-      "stopOnEntry": false,
 *     "args": ["run"],
 *     "cwd": "${workspaceRoot}",
-      "preLaunchTask": null,
-      "runtimeExecutable": null,
-      "runtimeArgs": [
-        "--nolazy"
-      ],
 *     "env": {
 *       "NODE_ENV": "development"
 *     },
-      "externalConsole": false,
-      "sourceMaps": false,
-      "outDir": null
-    }
-...
+    }]
 }
 ```
 
@@ -1470,45 +1318,7 @@ Starting from a utility script in node_modules
 
 * CWD is also important
 
----
-
-## More Launch Configs
-
-```js
-{
-    "version": "0.3.0",
-    "configurations": [
-    {
-      "name": "Launch",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceRoot}/node_modules/.bin/node-lambda",
-*     "stopOnEntry": false,
-      "args": ["run"],
-      "cwd": "${workspaceRoot}",
-*     "preLaunchTask": null,
-      "runtimeExecutable": null,
-      "runtimeArgs": [
-        "--nolazy"
-      ],
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "externalConsole": false,
-*     "sourceMaps": false,
-      "outDir": null
-    }
-...
-}
-```
-
-???
-* Stop on startup immediately
-* preLaunchTask (if you have a build task like babel)
-  * Won't go into that here
-* Sourcemaps!
-
-&rarr; With that setup let's check some of the other features
+&rarr; with that set up Let's **revisit breakpoints** and go over the other debug panes.
 
 ---
 
@@ -1535,13 +1345,22 @@ module.exports = router;
 ```
 
 ???
-adding static middleware....
+
+calling a function to construct an express middleware object.
+
+&rarr; Run our script and...
 
 ---
 
 ## Break on Exceptions
 
 ![](img/vscode-root-path-required.png)
+
+???
+
+Uh-oh! there's an error: "root path required"
+
+Go to my call stack and &rarr; Click on the frame that called this one
 
 ---
 
@@ -1592,28 +1411,25 @@ Useful to track change of something through steps, see where it changed
 
 ???
 
-* Execute code in the current context
+* Execute code in the current context (response.setHeader etc.)
+  * Good for things you have to transform with function calls
 * Also a good way to explore in-memory objects
 
----
-class:biglist
-# Chrome Devtools
-
-* Use Chrome as debug "*client*"
-* Outside the IDE 🙁
-* More Advanced Debugging Features 😄
+&rarr; Enough VS Code, let's look at debugging with the chrome debugger.
 
 ---
 # Node Inspector Installation
+
+???
+
+Node-inspector is the name of the tool that links chrome devtools to node.js
+
+--
 
 <pre class="ansi2html">
 $ npm install -g node-inspector
 $ node-inspect my-script.js
 </pre>
-
-???
-
-Node-inspector is the name of the tool that links chrome devtools to node.js
 
 ---
 # ~~Node Inspector Installation~~
@@ -1629,7 +1445,9 @@ Node-inspector is the name of the tool that links chrome devtools to node.js
 $ node --inspect my-script
 </pre>
 
-&rarr; Quick review of debug startup methods...
+???
+
+Before we jump in with chrome, let's &rarr; Quickly review the debug startup methods we've discussed so far
 
 ---
 
@@ -1665,6 +1483,10 @@ To start debugging, open the following URL in Chrome:
     chrome-devtools://devtools/remote/serve_file/@521e5b7e2b7cc66b4006a8a54cb9c4e57494a5ef/inspector.html?experiments=true&v8only=true&ws=localhost:9229/node
 </pre>
 
+???
+
+Let's jump into the chrome debugger
+
 ---
 
 # Chrome Debugger
@@ -1677,6 +1499,10 @@ To start debugging, open the following URL in Chrome:
     chrome-devtools://devtools/remote/serve_file/@521e5b7e2b7cc66b4006a8a54cb9c4e57494a5ef/inspector.html?experiments=true&v8only=true&ws=localhost:9229/node
 </pre>
 
+???
+
+Point a chrome browser to that URL....
+
 ---
 
 # Chrome Debugger
@@ -1685,10 +1511,11 @@ To start debugging, open the following URL in Chrome:
 
 ???
 
+Here it is! Looks fairly similar to VSCode debugger
+
 &rarr; Why would you use this instead?
 
 ---
-class:biglist
 
 ## Advantages (over VSCode) ✅
 
@@ -1713,9 +1540,8 @@ They do different things
 
 Use VS-Code for dev, chrome when you need more advanced debugging
 
-A
+breakpoints, watch expressions etc. are about the same (vscode has a slight edge in places)
 
-&rarr; breakpoints, watch expressions etc. are about the same (vscode has a slight edge in places)
 &rarr; **Profiling** is what chrome inspector is good for
 
 ---
@@ -1750,7 +1576,7 @@ A
 });
 
 *router.get('/loop/:iters', function loopHandler(req, res, next){
-  /* ... */
+  /* generate a big 2D array of numbers */
   res.send(ray.map(nums => nums.join(', ')).join('<br>'));
 });
 ```
@@ -1865,8 +1691,145 @@ Here you can see **by function** how much time was spent
 
 ???
 
-&larr; ... lots of recurions
+&larr; ... lots of recursion
 
 * Here our fibonacci function is very deep call
 
+&rarr; last thing: heap snapshots
+
 ---
+
+## Heap Snapshots
+
+???
+
+Capture a list of objects in memory and how much they use
+
+Here's our new route:
+
+--
+
+```js
+var sockets = [];
+
+function CreateNewFileReader(){
+* sockets.push(fs.createReadStream('/tmp/letter.txt'));
+}
+
+router.get('/leak', function(req, res){
+* CreateNewFileReader();
+  res.send('ok');
+});
+```
+
+???
+
+Each call to `/leak`, call a function that creates a new ReadableStream and puts it in an array
+
+Specifically, it opens a file read stream for `/tmp/letter.txt/`
+
+&rarr; Start our program and take a heap snapshot
+
+---
+
+## Snapshot
+
+![](img/heap-take-snapshot.png)
+
+???
+&rarr; looks like this
+
+---
+
+## Snapshot: Start
+
+![heap snapshot](img/heap-snapshot-1.png)
+
+???
+
+Won't explain this too much... but nothing out of the ordinary
+
+* Sorting by retained size
+* More memory is held by strings than anything else
+
+**Now hit our `/leak/` route 6,000 times**
+
+&rarr; Take another snapshot
+
+---
+
+## Snapshot: Later on...
+
+![snapshot after calling leak 6k times](img/heap-snapshot-2.png)
+
+???
+
+97% memory is in ArrayBufferData!! That doesn't look right.
+
+&rarr; Look at comparison from last snapshot, compare the two
+
+---
+
+## Snapshot: Comparison
+
+![](img/heap-comparison-sorted-by-alloc-size.png)
+
+???
+
+Note the **Delta** of those object counts-- we can see that a lot were created since last snapshot (6001)
+
+**Comparing across snapshots from different times to see what's been created or what's retained across snapshots one of the best ways to get started with memory analysis**
+
+Note also Alloc size + Size delta: these things are using a lot of memory!
+
+&rarr; Let's click to open this listing of objects
+
+---
+
+## Snapshot: Comparison
+
+![](img/heap-comparison-opened-system-jsarraybufferdata-tree.png)
+
+???
+
+What are these objects "jsarraybufferdata"?
+
+We select one and can inspect its **retainers** at the bottom, the retainer is the thing that keeps it in memory, keeps it from being garbage collected.
+
+Nothing is obvious right away, but if we hover over some of the objects we can see their properties &rarr;
+
+---
+
+## Snapshot
+
+![](img/heap-comparison-hovered-_readableState.png)
+
+???
+
+Aha! We can see this readable stream has a "path" property that points to letter.txt
+
+**This gives us a good clue for where to start looking in our codebase**
+
+&rarr; That's all. I hope you enjoyed the talk
+
+---
+.last-page-floater[![Great Indian Developer Summit](img/GIDSLogo.jpg)]
+
+# Thank you!!
+
+<hr style="clear:both" />
+
+## Sequoia McDowell
+
+.small-list[
+* 🌐  http://sequoia.makes.software
+* 🦆  @_sequoia
+* 📧  sequoia.mcdowell@gmail.com
+* http://sequoia.makes.software/debugging-nodejs-talk/
+]
+
+???
+
+* you can find the slides below
+* Thanks to GIDS
+* Thanks for coming!

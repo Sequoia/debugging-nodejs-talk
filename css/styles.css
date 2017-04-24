@@ -3,6 +3,7 @@
 .remark-slide-content{
   /*vertical-align: middle;*/
   padding: 1em 3em; /* reduce cuz I'm increasing text size*/
+  /*background-image: url('../img/GIDSLogo.jpg');*/
 }
 
 /* Text */
@@ -30,12 +31,24 @@ body .remark-slide-content{
 
 /* slide styles */
 
-.biglist ul, .biglist ol{
+.remark-slide-content ul, .remark-slide-content ol{
   list-style-type:circle;
-  font-size:2em;
+  font-size:1.8em;
   line-height:1.5em;
   margin-bottom:.5em;
   margin-top:.5em;
+}
+
+ul ul, ul ol, ol ol, ol ul{
+  font-size:inherit;
+}
+
+.small-list ul, .small-list ol{
+  font-size:1em;
+}
+
+.full-width{
+  width:100%; 
 }
 
 .todo {
@@ -71,7 +84,13 @@ img{
   width:100%;
 }
 
+.last-page-floater{
+  float:right;
+  width:55%;
+}
+
 /* pushing two pres together across a transition */
 pre.ansi2html+pre.ansi2html{
   margin-top:-2em;
+  overflow: hidden;
 }
