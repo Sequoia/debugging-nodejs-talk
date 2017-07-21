@@ -203,7 +203,7 @@ if(typeof cfg.port !== 'number'){
 const assert = require('assert');
 
 assert(cfg.host, 'host must be set');
-assert.equal(typeof cfg.port, 'number'), 'port must be a number');
+assert.equal(typeof cfg.port, 'number', 'port must be a number');
 ```
 
 ???
@@ -320,7 +320,7 @@ const log = debug('my-app');
 log('test');
 
 setTimeout(function(){
-  log('user: %j', { id: 12, name: 'Naomi' });
+  log('user: %j', { id: 12, name: 'Qian' });
 }, 500)
 ```
 
@@ -341,7 +341,7 @@ bash-3.2$ <span class="b4">DEBUG=*</span> node script.js
 --
 
   <span class="f3"><span class="bold">my-app </span></span>test <span class="f3">+0ms</span>
-  <span class="f3"><span class="bold">my-app </span></span>user: {&quot;id&quot;:12,&quot;name&quot;:&quot;Naomi&quot;} <span class="f3">+503ms</span>
+  <span class="f3"><span class="bold">my-app </span></span>user: {&quot;id&quot;:12,&quot;name&quot;:&quot;Qian&quot;} <span class="f3">+503ms</span>
 </pre>
 
 ???

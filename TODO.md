@@ -1,8 +1,8 @@
 # META
 
 * [ ] fixup lists (all big??) --> all text must be big
-* [ ] Annotate images with big red arrows
-* [ ] make a list of possible demos for the end
+* ~~[ ] Annotate images with big red arrows~~
+* ~~[ ] make a list of possible demos for the end~~
 * [ ] Outro slide (links to slides etc.)
 * [ ] Resources in reamde (links)
 * [ ] TRANSITION slides
